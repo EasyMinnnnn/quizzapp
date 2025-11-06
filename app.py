@@ -50,7 +50,7 @@ def main() -> None:
     information for each question.
     """
     st.set_page_config(page_title="Ứng dụng ôn tập & ôn thi", layout="wide")
-    st.title("📚 Ôn tập & ôn thi cùng "He"")
+    st.title("📚 Ôn tập & ôn thi cùng 'He' ")
     st.write(
         "Chào mừng bạn đến với ứng dụng ôn tập. Ứng dụng này giúp bạn ôn tập "
         "bộ câu hỏi trắc nghiệm bằng cách tạo đề ngẫu nhiên và chấm điểm tự động."
