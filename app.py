@@ -37,14 +37,6 @@ def inject_css() -> None:
     """
     Inject a custom stylesheet that recreates the emerald–gold palette and
     layout from the example geocoder application.
-
-    This function defines a handful of CSS variables for colours and sizes,
-    styles the application background, the sidebar, a hero section, cards for
-    questions and buttons.  The palette is based on dark emerald tones and
-    metallic gold accents: the variables ``--emerald-*`` hold progressively
-    lighter teal shades while ``--gold`` and ``--gold-hi`` provide the warm
-    accent colours.  Shadows, borders and blur effects help delineate panels
-    without using heavy boxes.
     """
     st.markdown(
         """
@@ -62,7 +54,7 @@ def inject_css() -> None:
 
             /* Text and panel colours */
             --text-main: #F5E8C7;  /* warm beige tone for primary text */
-            --answer-text: #FFDB58; /* bright yellow for answer text */
+            --answer-text: #99C2FF; /* Light blue for answer text - updated color */
             
             /* Panel colours and effects */
             --panel: rgba(255, 255, 255, 0.12);
