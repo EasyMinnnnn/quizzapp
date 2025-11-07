@@ -72,8 +72,8 @@ def inject_css() -> None:
             retaining the frosted glass effect. Raising the transparency
             values effectively lightens the card backgrounds and borders.
             */
-            --panel: rgba(255, 255, 255, 0.10);
-            --panel-bd: rgba(255, 255, 255, 0.20);
+            --panel: rgba(255, 255, 255, 0.12);
+            --panel-bd: rgba(255, 255, 255, 0.24);
             --shadow: 0 14px 36px rgba(0, 0, 0, 0.26);
             --r-lg: 18px;
         }
@@ -150,6 +150,15 @@ def inject_css() -> None:
             backdrop-filter: blur(6px);
         }
 
+        /* Force all text inside a question card to use a high-contrast
+        colour. Without this, many of the paragraphs and labels inside
+        question cards inherit dark grey text from Streamlit's default
+        theme and become nearly invisible against the dark emerald
+        background. The '!important' flags ensure our override wins. */
+        .question-card, .question-card * {
+            color: #EAFBF9 !important;
+        }
+
         /*
         Improve the contrast and legibility of radio button labels and other
         textual elements against the dark background. Streamlit renders
@@ -188,6 +197,14 @@ def inject_css() -> None:
         div[data-baseweb="slider"] p,
         div[data-baseweb="slider"] span,
         div[data-baseweb="slider"] label {
+            color: #F3FBFA !important;
+        }
+
+        /* Make all text inside the sidebar bright. Streamlit's sidebar
+        elements often inherit dark text colours that are hard to read
+        against a dark background. This rule ensures labels, slider
+        values and button text stand out clearly. */
+        [data-testid="stSidebar"] * {
             color: #F3FBFA !important;
         }
 
