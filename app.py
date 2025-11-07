@@ -13,10 +13,7 @@ def load_data() -> pd.DataFrame:
     subsequent rows as data.  This helper returns a DataFrame with the header
     properly assigned.
     """
-    # Read the raw CSV without a header.  Pandas will assign integer column
-    # numbers (0, 1, …) in this case.
     df_raw = pd.read_csv("questions.csv", header=None)
-    # Use the first row as column names
     header = df_raw.iloc[0]
     df = df_raw.iloc[1:].reset_index(drop=True)
     df.columns = header
@@ -56,15 +53,17 @@ def inject_css() -> None:
 
         :root {
             /* Primary colour palette */
-            --gold: #d4af37;        /* moderate yellow – 83% red, 69% green, 22% blue */
-            --gold-hi: #ffd700;    /* pure yellow with 100% red and 84% green */
-            --emerald-900: #083d3b; /* very dark cyan – 3% red, 24% green, 23% blue */
-            --emerald-800: #0a4d4a; /* dark teal rich in green (RGB 10,77,74) */
-            --emerald-700: #0e6963; /* dark shade of cyan (RGB 14,105,99) */
-            --emerald: #066e68;     /* very dark cyan (RGB 6,110,104) */
+            --gold: #d4af37;        
+            --gold-hi: #ffd700;    
+            --emerald-900: #083d3b;
+            --emerald-800: #0a4d4a; 
+            --emerald-700: #0e6963; 
+            --emerald: #066e68;     
 
             /* Text and panel colours */
-            --text-main: #F5E8C7; /* warm beige tone for primary text on dark green backgrounds */
+            --text-main: #F5E8C7;  /* warm beige tone for primary text */
+            --answer-text: #FFDB58; /* bright yellow for answer text */
+            
             /* Panel colours and effects */
             --panel: rgba(255, 255, 255, 0.12);
             --panel-bd: rgba(255, 255, 255, 0.24);
@@ -79,7 +78,6 @@ def inject_css() -> None:
         /* Application background */
         .stApp {
             background: radial-gradient(1200px 600px at 15% -10%, #0D5A56 0%, var(--emerald-800) 58%, var(--emerald-900) 100%);
-            /* Use our warm beige for the default text colour */
             color: var(--text-main);
         }
 
@@ -145,35 +143,23 @@ def inject_css() -> None:
             backdrop-filter: blur(6px);
         }
 
-        /* Force all text inside a question card to use the warm beige
-        defined in --text-main. Without this, many of the paragraphs
-        and labels inside question cards inherit dark grey text from
-        Streamlit's default theme and become nearly invisible against
-        the dark emerald background. The '!important' flags ensure
-        our override wins. */
+        /* Force all text inside a question card to use the warm beige */
         .question-card, .question-card * {
             color: var(--text-main) !important;
         }
 
-        /* Override colours for all elements within each radio group.  The
-        BaseWeb radio component nests its labels and values deeply, so
-        applying the colour at the top-level div and to all children
-        ensures the beige tone propagates to the visible answer text. */
+        /* Override colours for all elements within each radio group */
         div[data-baseweb="radio"],
         div[data-baseweb="radio"] * {
-            color: var(--text-main) !important;
+            color: var(--answer-text) !important;
         }
 
-        /* Bolden radio labels for better legibility. */
+        /* Bolden radio labels for better legibility */
         div[data-baseweb="radio"] label {
             font-weight: 600;
         }
 
-        /* Style the selected and unselected radio indicators. The
-        ::before pseudo-element of each label draws the outer circle,
-        while ::after draws the inner dot when selected. We tint these
-        with our gold gradient for the selected state and a lighter
-        emerald tone for the unselected state. */
+        /* Style the selected and unselected radio indicators */
         div[data-baseweb="radio"] input:not(:checked) + label::before {
             border-color: var(--emerald-700);
         }
@@ -185,46 +171,8 @@ def inject_css() -> None:
             background-color: var(--emerald-900);
         }
 
-        /* Adjust slider label colours to match the overall palette. Without
-        these overrides the slider labels were rendered in a dark grey
-        that blended into the background, making the selected values
-        difficult to read. */
-        div[data-baseweb="slider"] p,
-        div[data-baseweb="slider"] span,
-        div[data-baseweb="slider"] label {
-            color: var(--text-main) !important;
-        }
-
-        /* Make all text inside the sidebar bright. Streamlit's sidebar
-        elements often inherit dark text colours that are hard to read
-        against a dark background. This rule ensures labels, slider
-        values and button text stand out clearly. */
+        /* Make all text inside the sidebar bright */
         [data-testid="stSidebar"] * {
-            color: var(--text-main) !important;
-        }
-
-        /* Narrow the main content area and centre it on wide screens to
-        improve readability. Streamlit by default stretches the layout
-        across the full width of the browser window in wide mode, which
-        can result in very long lines of text. Constraining the width
-        makes paragraphs and question cards easier to scan and gives a
-        more balanced look. */
-        section[data-testid="stAppViewContainer"] > section.main {
-            max-width: 920px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Ensure general markdown text and list items are bright enough
-        against the dark background. */
-        .stMarkdown p,
-        .stMarkdown li,
-        .stMarkdown h1,
-        .stMarkdown h2,
-        .stMarkdown h3,
-        .stMarkdown h4,
-        .stMarkdown h5,
-        .stMarkdown h6 {
             color: var(--text-main) !important;
         }
 
@@ -237,12 +185,10 @@ def inject_css() -> None:
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
             transition: transform .05s, filter .15s;
         }
-        /* Primary buttons use the gold gradient */
         .btn-primary > button {
             background: linear-gradient(90deg, var(--gold), var(--gold-hi)) !important;
             color: #111 !important;
         }
-        /* Secondary (ghost) buttons */
         .btn-ghost > button {
             background: rgba(255, 255, 255, .10) !important;
             color: #fff !important;
@@ -263,13 +209,7 @@ def inject_css() -> None:
 def main() -> None:
     """
     Entry point for the Streamlit quiz application.
-
-    The main function orchestrates loading the data, rendering the hero section
-    with a welcoming message, handling user input in the sidebar, presenting
-    questions in styled cards and finally evaluating the user's answers.  The
-    overall layout is inspired by a dark emerald palette with golden accents.
     """
-    # Set up page configuration and inject custom CSS once at the beginning
     st.set_page_config(page_title="Ứng dụng ôn tập & ôn thi", layout="wide")
     inject_css()
 
@@ -277,12 +217,10 @@ def main() -> None:
     st.sidebar.markdown('<div class="brand-box">QUIZ</div>', unsafe_allow_html=True)
     st.sidebar.header("⚙️ Tùy chọn")
 
-    # Load data and show total count of questions
     df = load_data()
     total_questions = len(df)
     st.sidebar.write(f"Tổng số câu hỏi: **{total_questions}**")
 
-    # Slider in the sidebar to select number of questions to practice
     num_questions = st.sidebar.slider(
         "Chọn số câu hỏi muốn ôn:",
         min_value=1,
@@ -299,42 +237,25 @@ def main() -> None:
     if "submitted" not in st.session_state:
         st.session_state.submitted = False
 
-    # Sidebar button to create a new random quiz.  Wrap the button in a div
-    # using the primary class to apply the gold gradient styling.
     with st.sidebar:
         st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
         if st.button("🎲 Tạo đề ngẫu nhiên"):
-            # Sample a subset of question indices without replacement
             sampled_indices = random.sample(range(total_questions), int(num_questions))
             st.session_state.quiz_questions = df.iloc[sampled_indices].reset_index(drop=True)
             st.session_state.answers = {}
             st.session_state.submitted = False
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Render a hero section at the top of the page
-    st.markdown(
-        """
-        <div class="hero">
-          <h1>📚 Ôn tập & ôn thi cùng ''He''</h1>
-          <p>Chào mừng bạn đến với ứng dụng ôn tập. Ứng dụng này giúp bạn ôn tập bộ câu hỏi trắc nghiệm bằng cách tạo đề ngẫu nhiên và chấm điểm tự động.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Display the quiz if a set of questions has been generated
+    # Render the quiz
     if st.session_state.quiz_questions is not None:
         quiz_df: pd.DataFrame = st.session_state.quiz_questions
 
-        # Use a form to collect answers from all questions at once
         with st.form("quiz_form"):
             for idx, row in quiz_df.iterrows():
-                # Start a question card
                 st.markdown("<div class='question-card'>", unsafe_allow_html=True)
                 st.markdown(f"#### Câu {idx + 1}")
                 st.markdown(f"**{row['Câu hỏi']}**")
 
-                # Build the list of answer options, ignoring empty cells
                 options = []
                 for col_name in [
                     "Phương án A",
@@ -347,24 +268,16 @@ def main() -> None:
                     if pd.notna(val) and str(val).strip() != "":
                         options.append(val)
 
-                # Display the radio buttons for the answer choices
-                selected = st.radio(
-                    "Chọn phương án:",
-                    options,
-                    index=0,
-                    key=f"q_{idx}",
-                )
+                selected = st.radio("Chọn phương án:", options, index=0, key=f"q_{idx}")
                 st.session_state.answers[idx] = selected
                 st.markdown("</div>", unsafe_allow_html=True)
 
-            # Submit button inside the form.  Wrap in the primary button styling.
             st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
             submitted = st.form_submit_button("✅ Nộp bài")
             st.markdown('</div>', unsafe_allow_html=True)
             if submitted:
                 st.session_state.submitted = True
 
-    # After submission, evaluate answers and present feedback
     if st.session_state.submitted and st.session_state.quiz_questions is not None:
         quiz_df: pd.DataFrame = st.session_state.quiz_questions
         correct_count = 0
@@ -372,7 +285,6 @@ def main() -> None:
         for idx, row in quiz_df.iterrows():
             user_answer = st.session_state.answers.get(idx)
             correct_letter = str(row["Đ.án đúng"]).strip().upper()
-            # Map answer letter to the corresponding option column
             letter_map = {
                 "A": "Phương án A",
                 "B": "Phương án B",
@@ -382,21 +294,17 @@ def main() -> None:
             }
             correct_option = row[letter_map[correct_letter]]
             st.markdown(f"**Câu {idx + 1}:** {row['Câu hỏi']}")
-            # Provide immediate feedback on the answer
             if user_answer == correct_option:
                 st.success("✔️ Đúng")
                 correct_count += 1
             else:
                 st.error(f"❌ Sai. Đáp án đúng: {correct_option}")
-            # Expandable section for reference information
             with st.expander("📝 Tham khảo"):
                 st.write(f"**Số văn bản:** {row['Số văn bản tham chiếu (kèm trích yếu văn bản)']}")
                 st.write(f"**Điều khoản:** {row['Điều khoản tham chiếu cụ thể']}")
             st.markdown("---")
-        # Display the total score
         st.subheader(f"Bạn trả lời đúng **{correct_count}/{len(quiz_df)}** câu.")
 
-        # Button to restart the quiz, styled as a secondary action
         st.markdown('<div class="btn-ghost">', unsafe_allow_html=True)
         if st.button("🔄 Làm lại"):
             reset_state()
