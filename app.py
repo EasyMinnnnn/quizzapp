@@ -54,7 +54,7 @@ def inject_css() -> None:
 
             /* Text and panel colours */
             --text-main: #F5E8C7;  /* warm beige tone for primary text */
-            --answer-text: #99C2FF; /* Light blue for answer text - updated color */
+            --answer-text: #FFEB3B; /* Light yellow for answer text - updated color */
             
             /* Panel colours and effects */
             --panel: rgba(255, 255, 255, 0.12);
@@ -143,7 +143,7 @@ def inject_css() -> None:
         /* Override colours for all elements within each radio group */
         div[data-baseweb="radio"],
         div[data-baseweb="radio"] * {
-            color: var(--answer-text) !important;
+            color: var(--answer-text) !important;  /* Updated to light yellow */
         }
 
         /* Bolden radio labels for better legibility */
