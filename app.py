@@ -173,8 +173,17 @@ def inject_css() -> None:
         overall palette. We also bump up the font weight for better
         definition.
         */
-        div[data-baseweb="radio"] label {
+        /* Override colours for all elements within each radio group.  The
+        BaseWeb radio component nests its labels and values deeply, so
+        applying the colour at the top-level div and to all children
+        ensures the beige tone propagates to the visible answer text. */
+        div[data-baseweb="radio"],
+        div[data-baseweb="radio"] * {
             color: var(--text-main) !important;
+        }
+
+        /* Bolden radio labels for better legibility. */
+        div[data-baseweb="radio"] label {
             font-weight: 600;
         }
 
