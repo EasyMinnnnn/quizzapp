@@ -58,8 +58,9 @@ def main():
 
     st.title("📚 Ôn tập & ôn thi cùng ''He''")
     st.write(
-        "Chào mừng bạn đến với ứng dụng ôn tập. Ứng dụng này giúp bạn ôn tập "
-        "bộ câu hỏi trắc nghiệm bằng cách tạo đề ngẫu nhiên và chấm điểm tự động."
+         "Chào mừng bạn đến với không gian ôn tập của He. "
+         "Cùng nhau luyện tập với những câu hỏi trắc nghiệm ngẫu nhiên, "
+         "tự động chấm điểm và luôn đồng hành cùng nhau trên hành trình học tập này nhé!"
     )
 
     df = load_data()
