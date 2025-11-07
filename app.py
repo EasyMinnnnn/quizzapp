@@ -31,10 +31,10 @@ def inject_css():
             /* Style the cards for each question */
             .question-card {
                 background-color: #ffffff;
-                padding: 20px;
+                padding: 12px 20px;  /* Reduced padding */
                 border-radius: 10px;
                 box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-                margin-bottom: 20px;
+                margin-bottom: 10px;  /* Reduced margin */
             }
             /* Style for buttons */
             .stButton>button {
