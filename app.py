@@ -5,9 +5,8 @@ import random
 @st.cache_data
 def load_data() -> pd.DataFrame:
     """Load question bank from CSV without header and set first row as header."""
-    # Đọc file CSV không có header
     df_raw = pd.read_csv("questions.csv", header=None)
-    # Dòng đầu tiên chứa header thực sự
+    # Use the first row as the header
     header = df_raw.iloc[0]
     df = df_raw.iloc[1:].reset_index(drop=True)
     df.columns = header
@@ -19,21 +18,56 @@ def reset_state():
         if key in st.session_state:
             del st.session_state[key]
 
+def inject_css():
+    """Inject custom CSS for better styling."""
+    st.markdown("""
+        <style>
+            /* Hide the default Streamlit footer */
+            footer {visibility: hidden;}
+            /* Set a gentle gradient background */
+            .stApp {
+                background: linear-gradient(to bottom right, #eef2f7, #ffffff);
+            }
+            /* Style the cards for each question */
+            .question-card {
+                background-color: #ffffff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }
+            /* Style for buttons */
+            .stButton>button {
+                background-color: #0072B5;
+                color: #ffffff;
+                border: none;
+                border-radius: 5px;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+            .stButton>button:hover {
+                background-color: #005A94;
+                color: #ffffff;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
 def main():
     st.set_page_config(page_title="Ứng dụng ôn tập & ôn thi", layout="wide")
-    st.title("📚 Ôn tập & ôn thi cùng ''He'' ")
+    inject_css()
+
+    st.title("📚 Ôn tập & ôn thi cùng ''He''")
     st.write(
         "Chào mừng bạn đến với ứng dụng ôn tập. Ứng dụng này giúp bạn ôn tập "
         "bộ câu hỏi trắc nghiệm bằng cách tạo đề ngẫu nhiên và chấm điểm tự động."
     )
 
-    # Load the full question bank and fix columns
     df = load_data()
     total_questions = len(df)
-    st.write(f"Tổng số câu hỏi trong ngân hàng: **{total_questions}**")
+    st.sidebar.write(f"Tổng số câu hỏi: **{total_questions}**")
 
-    # Chọn số câu hỏi
-    num_questions = st.number_input(
+    # Tùy chọn ở sidebar
+    num_questions = st.sidebar.slider(
         "Chọn số câu hỏi muốn ôn:",
         min_value=1,
         max_value=int(total_questions),
@@ -41,7 +75,7 @@ def main():
         step=1,
     )
 
-    # Khởi tạo session state nếu chưa có
+    # Khởi tạo session state
     if "quiz_questions" not in st.session_state:
         st.session_state.quiz_questions = None
     if "answers" not in st.session_state:
@@ -50,32 +84,28 @@ def main():
         st.session_state.submitted = False
 
     # Nút tạo đề ngẫu nhiên
-    if st.button("🎲 Tạo đề ngẫu nhiên"):
+    if st.sidebar.button("🎲 Tạo đề ngẫu nhiên"):
         sampled_indices = random.sample(range(total_questions), int(num_questions))
         st.session_state.quiz_questions = df.iloc[sampled_indices].reset_index(drop=True)
         st.session_state.answers = {}
         st.session_state.submitted = False
 
-    # Nếu có đề, hiển thị câu hỏi trong form
+    # Hiển thị câu hỏi
     if st.session_state.quiz_questions is not None:
         quiz_df = st.session_state.quiz_questions
         with st.form("quiz_form"):
             for idx, row in quiz_df.iterrows():
-                st.markdown(f"### Câu {idx + 1}")
-                # Cột chứa câu hỏi là 'Câu hỏi'
+                # Bắt đầu thẻ câu hỏi
+                st.markdown("<div class='question-card'>", unsafe_allow_html=True)
+                st.markdown(f"#### Câu {idx + 1}")
                 st.markdown(f"**{row['Câu hỏi']}**")
-                # Lấy các phương án (lọc bỏ giá trị trống)
+                # Tạo danh sách đáp án
                 options = []
-                letter_map = {}  # Lưu chữ cái tương ứng với phương án
-                for letter, col_name in zip(
-                    ["A", "B", "C", "D", "E"],
-                    ["Phương án A", "Phương án B", "Phương án C", "Phương án D", "Phương án E"],
-                ):
+                for col_name in ["Phương án A", "Phương án B", "Phương án C", "Phương án D", "Phương án E"]:
                     val = row[col_name]
                     if pd.notna(val) and str(val).strip() != "":
                         options.append(val)
-                        letter_map[letter] = val
-                # Hiển thị radio chọn đáp án
+                # Radio chọn đáp án
                 selected = st.radio(
                     "Chọn phương án:",
                     options,
@@ -83,13 +113,13 @@ def main():
                     key=f"q_{idx}",
                 )
                 st.session_state.answers[idx] = selected
-                st.markdown("---")
-            # Nút submit trong form
+                st.markdown("</div>", unsafe_allow_html=True)
+            # Nút submit
             submitted = st.form_submit_button("✅ Nộp bài")
             if submitted:
                 st.session_state.submitted = True
 
-    # Sau khi nộp, chấm điểm và hiển thị kết quả
+    # Chấm điểm và hiển thị kết quả
     if st.session_state.submitted and st.session_state.quiz_questions is not None:
         quiz_df = st.session_state.quiz_questions
         correct_count = 0
@@ -97,22 +127,20 @@ def main():
         for idx, row in quiz_df.iterrows():
             user_answer = st.session_state.answers.get(idx)
             correct_letter = str(row["Đ.án đúng"]).strip().upper()
-            # Map chữ cái sang phương án tương ứng
-            correct_col_map = {
+            letter_map = {
                 "A": "Phương án A",
                 "B": "Phương án B",
                 "C": "Phương án C",
                 "D": "Phương án D",
                 "E": "Phương án E",
             }
-            correct_option = row[correct_col_map[correct_letter]]
+            correct_option = row[letter_map[correct_letter]]
             st.markdown(f"**Câu {idx + 1}:** {row['Câu hỏi']}")
             if user_answer == correct_option:
                 st.success("✔️ Đúng")
                 correct_count += 1
             else:
                 st.error(f"❌ Sai. Đáp án đúng: {correct_option}")
-            # Tham khảo
             with st.expander("📝 Tham khảo"):
                 st.write(f"**Số văn bản:** {row['Số văn bản tham chiếu (kèm trích yếu văn bản)']}")
                 st.write(f"**Điều khoản:** {row['Điều khoản tham chiếu cụ thể']}")
