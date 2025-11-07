@@ -85,8 +85,12 @@ def main():
         # Use a form to collect all answers before submission
         with st.form("quiz_form"):
             for idx, row in quiz_df.iterrows():
-                st.markdown(f"### Câu {idx + 1}")
-                st.markdown(f"**{row['MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ']}**")
+                if 'MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ' in row:
+                    st.markdown(f"### Câu {idx + 1}")
+                    st.markdown(f"**{row['MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ']}**")
+                else:
+                    st.error("Cột câu hỏi không tồn tại!")
+                    continue
 
                 # Collect available answer options by filtering out empty cells
                 options = []
@@ -110,6 +114,7 @@ def main():
                 # Store the selected answer in session state
                 st.session_state.answers[idx] = selected
                 st.markdown("---")
+
             # Submit button inside form
             submitted = st.form_submit_button("✅ Nộp bài")
             if submitted:
