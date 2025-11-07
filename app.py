@@ -85,19 +85,16 @@ def main():
         # Use a form to collect all answers before submission
         with st.form("quiz_form"):
             for idx, row in quiz_df.iterrows():
-                if 'MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ' in row:
-                    st.markdown(f"### Câu {idx + 1}")
-                    st.markdown(f"**{row['MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ']}**")
-                else:
-                    st.error("Cột câu hỏi không tồn tại!")
-                    continue
+                # Đảm bảo cột câu hỏi tồn tại và truy cập đúng
+                st.markdown(f"### Câu {idx + 1}")
+                st.markdown(f"**{row['Unnamed: 1']}**")
 
                 # Collect available answer options by filtering out empty cells
                 options = []
                 option_labels = []  # Keep track of original letters for mapping
                 for letter, col_name in zip(
                     ["A", "B", "C", "D", "E"],
-                    ["Unnamed: 1", "Unnamed: 2", "Unnamed: 3", "Unnamed: 4", "Unnamed: 5"],
+                    ["Unnamed: 2", "Unnamed: 3", "Unnamed: 4", "Unnamed: 5", "Unnamed: 6"],
                 ):
                     val = row[col_name]
                     if pd.notna(val) and str(val).strip() != "":
@@ -130,14 +127,14 @@ def main():
             correct_letter = str(row["Đ.án đúng"]).strip().upper()
             # Map letter to the actual text of the correct option
             letter_map = {
-                "A": "Unnamed: 1",
-                "B": "Unnamed: 2",
-                "C": "Unnamed: 3",
-                "D": "Unnamed: 4",
-                "E": "Unnamed: 5",
+                "A": "Unnamed: 2",
+                "B": "Unnamed: 3",
+                "C": "Unnamed: 4",
+                "D": "Unnamed: 5",
+                "E": "Unnamed: 6",
             }
             correct_option = row[letter_map.get(correct_letter)]
-            st.markdown(f"**Câu {idx + 1}:** {row['MẪU CÂU HỎI KIỂM TRA NLCM CÁN BỘ']}")
+            st.markdown(f"**Câu {idx + 1}:** {row['Unnamed: 1']}")
             # Compare the user's answer to the correct one
             if user_answer == correct_option:
                 st.success("✔️ Đúng")
