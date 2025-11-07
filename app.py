@@ -56,24 +56,16 @@ def inject_css() -> None:
 
         :root {
             /* Primary colour palette */
-            --gold: #d4af37;        /* moderate yellow – 83% red, 69% green, 22% blue【485677116544312†L16-L32】 */
-            --gold-hi: #ffd700;    /* pure yellow with 100% red and 84% green【958241556107692†L16-L19】 */
-            --emerald-900: #083d3b; /* very dark cyan – 3% red, 24% green, 23% blue【398182562603330†L16-L20】 */
-            --emerald-800: #0a4d4a; /* dark teal rich in green (RGB 10,77,74)【694270922192189†L54-L62】 */
-            --emerald-700: #0e6963; /* dark shade of cyan (RGB 14,105,99)【404727479287283†L54-L62】 */
-            --emerald: #066e68;     /* very dark cyan (RGB 6,110,104)【501709117854018†L16-L19】 */
+            --gold: #d4af37;        /* moderate yellow – 83% red, 69% green, 22% blue */
+            --gold-hi: #ffd700;    /* pure yellow with 100% red and 84% green */
+            --emerald-900: #083d3b; /* very dark cyan – 3% red, 24% green, 23% blue */
+            --emerald-800: #0a4d4a; /* dark teal rich in green (RGB 10,77,74) */
+            --emerald-700: #0e6963; /* dark shade of cyan (RGB 14,105,99) */
+            --emerald: #066e68;     /* very dark cyan (RGB 6,110,104) */
 
             /* Text and panel colours */
             --text-main: #F5E8C7; /* warm beige tone for primary text on dark green backgrounds */
             /* Panel colours and effects */
-            /*
-            The default panel transparency was extremely low, resulting in
-            insufficient contrast between the question cards and the
-            dark teal page background. To improve readability we increase
-            the white alpha values so the cards stand out more while
-            retaining the frosted glass effect. Raising the transparency
-            values effectively lightens the card backgrounds and borders.
-            */
             --panel: rgba(255, 255, 255, 0.12);
             --panel-bd: rgba(255, 255, 255, 0.24);
             --shadow: 0 14px 36px rgba(0, 0, 0, 0.26);
@@ -163,16 +155,6 @@ def inject_css() -> None:
             color: var(--text-main) !important;
         }
 
-        /*
-        Improve the contrast and legibility of radio button labels and other
-        textual elements against the dark background. Streamlit renders
-        radio widgets using the BaseWeb library, which wraps labels
-        inside <label> elements under a div with a data-baseweb="radio"
-        attribute. Targeting that structure allows us to override the
-        default grey colour and set a brighter tone that matches the
-        overall palette. We also bump up the font weight for better
-        definition.
-        */
         /* Override colours for all elements within each radio group.  The
         BaseWeb radio component nests its labels and values deeply, so
         applying the colour at the top-level div and to all children
