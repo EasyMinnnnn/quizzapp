@@ -64,8 +64,16 @@ def inject_css() -> None:
             --emerald: #066e68;     /* very dark cyan (RGB 6,110,104)【501709117854018†L16-L19】 */
 
             /* Panel colours and effects */
-            --panel: rgba(255, 255, 255, 0.045);
-            --panel-bd: rgba(255, 255, 255, 0.09);
+            /*
+            The default panel transparency was extremely low, resulting in
+            insufficient contrast between the question cards and the
+            dark teal page background. To improve readability we increase
+            the white alpha values so the cards stand out more while
+            retaining the frosted glass effect. Raising the transparency
+            values effectively lightens the card backgrounds and borders.
+            */
+            --panel: rgba(255, 255, 255, 0.10);
+            --panel-bd: rgba(255, 255, 255, 0.20);
             --shadow: 0 14px 36px rgba(0, 0, 0, 0.26);
             --r-lg: 18px;
         }
@@ -140,6 +148,72 @@ def inject_css() -> None:
             padding: 14px 16px;
             margin-bottom: 14px;
             backdrop-filter: blur(6px);
+        }
+
+        /*
+        Improve the contrast and legibility of radio button labels and other
+        textual elements against the dark background. Streamlit renders
+        radio widgets using the BaseWeb library, which wraps labels
+        inside <label> elements under a div with a data-baseweb="radio"
+        attribute. Targeting that structure allows us to override the
+        default grey colour and set a brighter tone that matches the
+        overall palette. We also bump up the font weight for better
+        definition.
+        */
+        div[data-baseweb="radio"] label {
+            color: #F3FBFA !important;
+            font-weight: 600;
+        }
+
+        /* Style the selected and unselected radio indicators. The
+        ::before pseudo-element of each label draws the outer circle,
+        while ::after draws the inner dot when selected. We tint these
+        with our gold gradient for the selected state and a lighter
+        emerald tone for the unselected state. */
+        div[data-baseweb="radio"] input:not(:checked) + label::before {
+            border-color: var(--emerald-700);
+        }
+        div[data-baseweb="radio"] input:checked + label::before {
+            border-color: var(--gold);
+            background-color: var(--gold);
+        }
+        div[data-baseweb="radio"] input:checked + label::after {
+            background-color: var(--emerald-900);
+        }
+
+        /* Adjust slider label colours to match the overall palette. Without
+        these overrides the slider labels were rendered in a dark grey
+        that blended into the background, making the selected values
+        difficult to read. */
+        div[data-baseweb="slider"] p,
+        div[data-baseweb="slider"] span,
+        div[data-baseweb="slider"] label {
+            color: #F3FBFA !important;
+        }
+
+        /* Narrow the main content area and centre it on wide screens to
+        improve readability. Streamlit by default stretches the layout
+        across the full width of the browser window in wide mode, which
+        can result in very long lines of text. Constraining the width
+        makes paragraphs and question cards easier to scan and gives a
+        more balanced look. */
+        section[data-testid="stAppViewContainer"] > section.main {
+            max-width: 920px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Ensure general markdown text and list items are bright enough
+        against the dark background. */
+        .stMarkdown p,
+        .stMarkdown li,
+        .stMarkdown h1,
+        .stMarkdown h2,
+        .stMarkdown h3,
+        .stMarkdown h4,
+        .stMarkdown h5,
+        .stMarkdown h6 {
+            color: #F3FBFA !important;
         }
 
         /* Buttons */
