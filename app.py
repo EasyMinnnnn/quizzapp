@@ -63,6 +63,8 @@ def inject_css() -> None:
             --emerald-700: #0e6963; /* dark shade of cyan (RGB 14,105,99)【404727479287283†L54-L62】 */
             --emerald: #066e68;     /* very dark cyan (RGB 6,110,104)【501709117854018†L16-L19】 */
 
+            /* Text and panel colours */
+            --text-main: #F5E8C7; /* warm beige tone for primary text on dark green backgrounds */
             /* Panel colours and effects */
             /*
             The default panel transparency was extremely low, resulting in
@@ -85,7 +87,8 @@ def inject_css() -> None:
         /* Application background */
         .stApp {
             background: radial-gradient(1200px 600px at 15% -10%, #0D5A56 0%, var(--emerald-800) 58%, var(--emerald-900) 100%);
-            color: #F3FBFA;
+            /* Use our warm beige for the default text colour */
+            color: var(--text-main);
         }
 
         /* Sidebar styling */
@@ -150,13 +153,14 @@ def inject_css() -> None:
             backdrop-filter: blur(6px);
         }
 
-        /* Force all text inside a question card to use a high-contrast
-        colour. Without this, many of the paragraphs and labels inside
-        question cards inherit dark grey text from Streamlit's default
-        theme and become nearly invisible against the dark emerald
-        background. The '!important' flags ensure our override wins. */
+        /* Force all text inside a question card to use the warm beige
+        defined in --text-main. Without this, many of the paragraphs
+        and labels inside question cards inherit dark grey text from
+        Streamlit's default theme and become nearly invisible against
+        the dark emerald background. The '!important' flags ensure
+        our override wins. */
         .question-card, .question-card * {
-            color: #EAFBF9 !important;
+            color: var(--text-main) !important;
         }
 
         /*
@@ -170,7 +174,7 @@ def inject_css() -> None:
         definition.
         */
         div[data-baseweb="radio"] label {
-            color: #F3FBFA !important;
+            color: var(--text-main) !important;
             font-weight: 600;
         }
 
@@ -197,7 +201,7 @@ def inject_css() -> None:
         div[data-baseweb="slider"] p,
         div[data-baseweb="slider"] span,
         div[data-baseweb="slider"] label {
-            color: #F3FBFA !important;
+            color: var(--text-main) !important;
         }
 
         /* Make all text inside the sidebar bright. Streamlit's sidebar
@@ -205,7 +209,7 @@ def inject_css() -> None:
         against a dark background. This rule ensures labels, slider
         values and button text stand out clearly. */
         [data-testid="stSidebar"] * {
-            color: #F3FBFA !important;
+            color: var(--text-main) !important;
         }
 
         /* Narrow the main content area and centre it on wide screens to
@@ -230,7 +234,7 @@ def inject_css() -> None:
         .stMarkdown h4,
         .stMarkdown h5,
         .stMarkdown h6 {
-            color: #F3FBFA !important;
+            color: var(--text-main) !important;
         }
 
         /* Buttons */
